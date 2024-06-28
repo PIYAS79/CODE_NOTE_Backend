@@ -8,7 +8,6 @@ import { duplicateKeyError, mongooseValidationErorr, refNotFoundError, zodValida
 
 
 const global_Error_Handler = (err: any, req: Request, res: Response, next: NextFunction) => {
-    console.log("========================>",err);
    
     let errorTitle = "There is a server side error *"
     let errorSource :Erorr_Source_Type = [{
@@ -33,6 +32,7 @@ const global_Error_Handler = (err: any, req: Request, res: Response, next: NextF
         const gettedFormat = refNotFoundError(err);
         errorTitle = gettedFormat.errorTitle;
         errorSource = gettedFormat.errorSouce;
+        statusCode = 404;
     }else if(err instanceof Error){
         errorTitle = err.message,
         errorSource = [{
