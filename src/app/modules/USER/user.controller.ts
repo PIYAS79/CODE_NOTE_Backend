@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import Async_Catch from "../../utils/try.code";
 import httpStatus from "http-status";
+import { User_Services } from "./user.services";
 
 
 
@@ -8,9 +9,14 @@ import httpStatus from "http-status";
 
 const Create_Teacher_Controller = Async_Catch(async(req:Request,res:Response,next:NextFunction)=>{
   
-    
+    const result = await User_Services.Create_Teacher_Service(req.body);
     res.status(httpStatus.OK).json({
         success:true,
-        message : "Teacher Created Successfully !"
+        message : "Teacher Created Successfully !",
+        data : result
     })
 })
+
+export const User_Controller = {
+    Create_Teacher_Controller,
+}

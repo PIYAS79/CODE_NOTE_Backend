@@ -2,9 +2,10 @@ import { Schema, model } from "mongoose";
 import { User_Type } from "./user.interface";
 
 
-const User_Schema = new Schema<User_Type>({
+export const User_Schema = new Schema<User_Type>({
     email : {
         type : String,
+        unique:true,
         required : [true, "Provide your email *"]
     },
     isDeleted : {
