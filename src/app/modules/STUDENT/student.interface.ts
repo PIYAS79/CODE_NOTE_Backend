@@ -4,11 +4,11 @@ import { User_Contact_Type } from "../../global/interfaces"
 
 
 
-export type Teacher_Type = {
+export type Student_Type = {
     user : Types.ObjectId,
     email:string,
     name : User_Name_Type,
-    teacherId : string,
+    studentId : string,
     department : string,
     skills? : string[],
     contact? : User_Contact_Type
@@ -16,11 +16,11 @@ export type Teacher_Type = {
 }
 
 
-// get teacher type
-export type Get_Teacher_Type = {
+// get student type
+export type Get_Student_Type = {
     user: User_Type,
     name: User_Name_Type,
-    teacherId: string,
+    studentId: string,
     department: string,
     skills?: string[],
     contact?: User_Contact_Type
