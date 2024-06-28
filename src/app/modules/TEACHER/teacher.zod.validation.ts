@@ -8,10 +8,19 @@ const Get_Teacher_Schema = z.object({
         name: Zod_User_Name_Schema,
         teacherId: z.string(),
         department: z.string(),
-        // skills: z.array(z.string()).optional(),
-        // contact: Zod_User_Contact_Schema.optional(),
-        // codes: z.array(z.string()).optional()
     })
 });
 
-export { Get_Teacher_Schema };
+
+const Zod_UPDATE_Teacher_Schema = z.object({
+    body: z.object({
+        user: Zod_User_Schema.optional(),
+        name: Zod_User_Name_Schema.optional(),
+        teacherId: z.string().optional(),
+        department: z.string().optional(),
+        skills: z.array(z.string()).optional(),
+        contact: Zod_User_Contact_Schema.optional(),
+    })
+});
+
+export { Get_Teacher_Schema,Zod_UPDATE_Teacher_Schema };

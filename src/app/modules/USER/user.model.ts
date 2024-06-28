@@ -8,10 +8,6 @@ export const User_Schema = new Schema<User_Type>({
         unique:true,
         required : [true, "Provide your email *"]
     },
-    isDeleted : {
-        type : Boolean,
-        default : false,
-    },
     passwordChangeAt :{
         type : Date,
     },

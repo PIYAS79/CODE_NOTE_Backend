@@ -10,12 +10,9 @@ const Zod_User_Name_Schema = z.object({
 // User_Type schema
 const Zod_User_Schema = z.object({
     email: z.string().email(),
-    // status: z.enum(["ACTIVE", "BLOCK"]),
     role: z.enum(["STUDENT", "TEACHER", "ADMIN", "SUPER"]),
-    // isDeleted: z.boolean(),
     userId: z.string(),
     password: z.string(),
-    // passwordChangeAt: z.date().optional(),
     profileImage: z.string().optional(),
 });
 
@@ -29,5 +26,6 @@ const Zod_User_Contact_Schema = z.object({
     phone: z.string().optional(),
     address: z.string().optional()
 });
+
 
 export {Zod_User_Name_Schema,Zod_User_Schema,Zod_User_Contact_Schema}

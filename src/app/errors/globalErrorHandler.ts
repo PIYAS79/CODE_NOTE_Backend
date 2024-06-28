@@ -2,8 +2,9 @@ import { NextFunction, Request, Response } from 'express'
 import httpStatus from 'http-status'
 import config from '../config';
 import { Erorr_Source_Type } from './errorInterface';
-import {ZodError,ZodIssue} from 'zod';
-import mongoose from 'mongoose';
+import {ZodError} from 'zod';
+import Final_App_Error from './Final_App_Error';
+import { duplicateKeyError, mongooseValidationErorr, refNotFoundError, zodValidationError } from '../utils/errorHandler';
 
 
 const global_Error_Handler = (err: any, req: Request, res: Response, next: NextFunction) => {
@@ -15,37 +16,6 @@ const global_Error_Handler = (err: any, req: Request, res: Response, next: NextF
         message :  "There is a server side error *"
     }]
     let statusCode = err.statusCode || httpStatus.INTERNAL_SERVER_ERROR;
-
-    // zod validion error 
-    const zodValidationError=(err:ZodError)=>{
-        const errorTitle = "Type Validation Error (zod) *";
-        const errorSouce:Erorr_Source_Type = err.issues.map((one:ZodIssue)=>({
-            path:one.path[one.path.length-1],
-            message : one.message
-        }))
-        return {errorTitle,errorSouce}
-    }
-    const mongooseValidationErorr=(err:mongoose.Error.ValidationError)=>{
-        const errorTitle = "Type Validation Error (mongoose) *";
-        const errorSouce:Erorr_Source_Type = Object.values(err.errors).map((one:mongoose.Error.ValidatorError|mongoose.Error.CastError)=>{
-            return({
-                path:one.path,
-                message:one.message
-            })
-        })
-        return {errorTitle,errorSouce}
-    }
-    const duplicateKeyError =(err:any)=>{
-        const regex = /{ email: "([^"]+)" }/;
-        const match = err.errmsg.match(regex);
-        const finalString = match[1];
-        const errorTitle = "Duplicatte key error";
-        const errorSouce:Erorr_Source_Type=[{
-            path : '',
-            message : `${finalString} is already into the DB`
-        }]
-        return {errorTitle,errorSouce};
-    }
 
     if(err instanceof ZodError){
         const gettedFormat = zodValidationError(err);
@@ -59,6 +29,22 @@ const global_Error_Handler = (err: any, req: Request, res: Response, next: NextF
         const gettedFormat = duplicateKeyError(err);
         errorTitle = gettedFormat.errorTitle;
         errorSource = gettedFormat.errorSouce;
+    }else if(err.name === 'CastError'){
+        const gettedFormat = refNotFoundError(err);
+        errorTitle = gettedFormat.errorTitle;
+        errorSource = gettedFormat.errorSouce;
+    }else if(err instanceof Error){
+        errorTitle = err.message,
+        errorSource = [{
+            path : '',
+            message : err.message
+        }]
+    }else if(err instanceof Final_App_Error){
+        errorTitle = err.message,
+        errorSource = [{
+            path : '',
+            message : err.message
+        }]
     }
 
     res.status(statusCode).json({
