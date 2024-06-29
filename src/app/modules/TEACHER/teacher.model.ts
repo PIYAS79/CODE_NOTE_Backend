@@ -1,6 +1,5 @@
-import { Schema, Types, model } from "mongoose"
-import { User_Schema } from "../USER/user.model"
-import { Code_Schema, User_Contact_Schema, User_Name_Schema } from "../../global/schemas"
+import { Schema, model } from "mongoose"
+import { User_Contact_Schema, User_Name_Schema } from "../../global/schemas"
 import { Teacher_Type } from "./teacher.interface"
 
 
@@ -26,7 +25,11 @@ const TeacherSchema = new Schema<Teacher_Type>({
     },
     skills : [String],
     contact : User_Contact_Schema,
-    codes : [Code_Schema] 
+},{
+    timestamps:true,
+    toJSON:{
+        virtuals:true
+    }
 })
 
 export const Teacher_Model = model<Teacher_Type>("Teacher",TeacherSchema);

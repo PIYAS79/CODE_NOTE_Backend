@@ -37,6 +37,11 @@ export const User_Schema = new Schema<User_Type>({
     profileImage : {
         type : String,
     }
+},{
+    timestamps:true,
+    toJSON:{
+        virtuals:true,
+    }
 })
 
 

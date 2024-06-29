@@ -12,7 +12,6 @@ export type Student_Type = {
     department : string,
     skills? : string[],
     contact? : User_Contact_Type
-    codes? : string[] 
 }
 
 
@@ -24,5 +23,4 @@ export type Get_Student_Type = {
     department: string,
     skills?: string[],
     contact?: User_Contact_Type
-    codes?: string[]
 }

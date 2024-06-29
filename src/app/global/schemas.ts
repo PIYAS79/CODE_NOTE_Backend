@@ -39,26 +39,3 @@ export const User_Contact_Schema = {
     },
 }
 
-
-export const Code_Schema = {
-    title: {
-        type: String,
-        required:[true,"Code title is required *"]
-    },
-    courseCode: {
-        type: String,
-    },
-    language: {
-        type: String,
-    },
-    submitAt: {
-        type:Date
-    },
-    code: {
-        type: String,
-        required:[true,"give some codes *"]
-    },
-    isStar: {
-        type: Boolean,
-    },
-}

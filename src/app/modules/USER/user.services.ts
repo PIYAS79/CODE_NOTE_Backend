@@ -38,7 +38,6 @@ const Create_Teacher_Service = async(userData: Get_Teacher_Type) => {
             department: userData.department,
             skills: [],
             contact:{},
-            codes:[]
         }
         // after ceating the user now create the teacher
         const teacher = await Teacher_Model.create([newTeacher],{session});
@@ -82,7 +81,6 @@ const Create_Student_Service = async(userData: Get_Student_Type) => {
             department: userData.department,
             skills: [],
             contact:{},
-            codes:[]
         }
         // after ceating the user now create the teacher
         const teacher = await Student_Model.create([newStudent],{session});
