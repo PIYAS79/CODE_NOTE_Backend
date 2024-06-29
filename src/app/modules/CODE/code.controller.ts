@@ -38,7 +38,6 @@ const Get_User_Codes_Controller = Async_Catch(async(req:Request,res:Response,nex
     const uid = req.params.uid;
     const result = await Code_Services.Get_User_Codes_Service(uid);
 
-
     res.status(httpStatus.OK).json({
         success: true,
         message: "Successfully retrieve a user codes !",

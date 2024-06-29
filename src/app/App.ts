@@ -4,13 +4,16 @@ import httpStatus from 'http-status';
 import global_Error_Handler from './errors/globalErrorHandler';
 import route_Not_Found_Error from './errors/routeNotFoundError';
 import router from './routes';
+import cookieParser from 'cookie-parser';
+import config from './config';
 
 
 const app = express();
 
 // ------------------- parsing middleware call --------------------
 app.use(express.json());
-app.use(cors());
+app.use(cors({origin : [(config.client_url as string),]}));
+app.use(cookieParser())
 
 // initial route -------------------------------------------------
 app.get('/',(req:Request,res:Response)=>{

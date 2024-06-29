@@ -7,17 +7,20 @@ import httpStatus from "http-status"
 import { Teacher_Model } from "../TEACHER/teacher.model"
 import { Get_Student_Type, Student_Type } from "../STUDENT/student.interface"
 import { Student_Model } from "../STUDENT/student.model"
+import { Encrypt_Password } from "../../utils/bcrypt.operation"
 
 
 
 const Create_Teacher_Service = async(userData: Get_Teacher_Type) => {
+
+    const encryptedPass = await Encrypt_Password(userData.user.password);
 
     const newUser: User_Type = {
         email: userData.user.email,
         status: "ACTIVE",
         role: userData.user.role,
         userId: userData.user.userId,
-        password: userData.user.password,
+        password: encryptedPass,
         profileImage:'',
     }
 
@@ -55,12 +58,14 @@ const Create_Teacher_Service = async(userData: Get_Teacher_Type) => {
 }
 const Create_Student_Service = async(userData: Get_Student_Type) => {
 
+    const encryptedPass = await Encrypt_Password(userData.user.password);
+
     const newUser: User_Type = {
         email: userData.user.email,
         status: "ACTIVE",
         role: userData.user.role,
         userId: userData.user.userId,
-        password: userData.user.password,
+        password: encryptedPass,
         profileImage:'',
     }
 
