@@ -14,10 +14,41 @@ const Create_Code_Controller = Async_Catch(async(req:Request,res:Response,next:N
         message: "Successfully create a code !",
         data: result
     })
-
 })
+const Get_All_Code_Controller = Async_Catch(async(req:Request,res:Response,next:NextFunction)=>{
+    const result = await Code_Services.Get_All_Code_Service();
 
+    res.status(httpStatus.OK).json({
+        success: true,
+        message: "Successfully retrieve all codes !",
+        data: result
+    })
+})
+const Get_Single_Code_Controller = Async_Catch(async(req:Request,res:Response,next:NextFunction)=>{
+    const cid = req.params.cid;
+    const result = await Code_Services.Get_Single_Code_Service(cid);
+
+    res.status(httpStatus.OK).json({
+        success: true,
+        message: "Successfully retrieve a code !",
+        data: result
+    })
+})
+const Get_User_Codes_Controller = Async_Catch(async(req:Request,res:Response,next:NextFunction)=>{
+    const uid = req.params.uid;
+    const result = await Code_Services.Get_User_Codes_Service(uid);
+
+
+    res.status(httpStatus.OK).json({
+        success: true,
+        message: "Successfully retrieve a user codes !",
+        data: result
+    })
+})
 
 export const Code_Controller = {
     Create_Code_Controller,
+    Get_All_Code_Controller,
+    Get_Single_Code_Controller,
+    Get_User_Codes_Controller
 }
