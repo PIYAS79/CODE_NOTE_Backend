@@ -7,7 +7,6 @@ import config from "../../config";
 
 
 const Auth_Login_Controller = Async_Catch(async(req:Request,res:Response,next:NextFunction)=>{
-
     const gettedData = req.body;
     const {AccessToken,RefreshToken} = await Auth_Services.Auth_Login_Service(gettedData);
 
@@ -21,7 +20,12 @@ const Auth_Login_Controller = Async_Catch(async(req:Request,res:Response,next:Ne
     })
 })
 const Refresh_Token_Controller = Async_Catch(async(req:Request,res:Response,next:NextFunction)=>{
-    console.log(req.cookies.refreshToken);
+    const {AccessToken} = await Auth_Services.Refresh_Token_Service(req.cookies.refreshToken)
+    res.status(httpStatus.OK).json({
+        success: true,
+        message: "Successfully login user !",
+        data: {AccessToken}
+    })
 })
 
 export const Auth_Contollers = {

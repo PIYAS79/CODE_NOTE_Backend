@@ -15,3 +15,8 @@ export const Create_JWT_Token = (data:JWT_Get_Data_Type,exTime:string) => {
     },(config.jwt_secret as string),{expiresIn:exTime})
     return token;
 }
+
+export const Decode_Token = (token:string)=>{
+    const decodedData = jwt.verify(token,(config.jwt_secret as string));
+    return decodedData;
+}
