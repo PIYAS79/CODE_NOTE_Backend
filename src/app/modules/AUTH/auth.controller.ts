@@ -8,7 +8,7 @@ import config from "../../config";
 
 const Auth_Login_Controller = Async_Catch(async(req:Request,res:Response,next:NextFunction)=>{
     const gettedData = req.body;
-    const {AccessToken,RefreshToken} = await Auth_Services.Auth_Login_Service(gettedData);
+    const {AccessToken,RefreshToken,user} = await Auth_Services.Auth_Login_Service(gettedData);
 
     res.cookie('refreshToken',RefreshToken,{
         httpOnly:true,
@@ -16,7 +16,7 @@ const Auth_Login_Controller = Async_Catch(async(req:Request,res:Response,next:Ne
     }).status(httpStatus.OK).json({
         success: true,
         message: "Successfully login user !",
-        data: {AccessToken}
+        data: {AccessToken,user}
     })
 })
 const Refresh_Token_Controller = Async_Catch(async(req:Request,res:Response,next:NextFunction)=>{

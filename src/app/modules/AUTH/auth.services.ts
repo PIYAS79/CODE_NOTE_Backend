@@ -5,6 +5,7 @@ import { Change_Password_Data_Type, Create_Token_Data_Type } from "./auth.interf
 import { Decrypt_Password, Encrypt_Password } from "../../utils/bcrypt.operation";
 import { Create_JWT_Token, Decode_Token } from "../../utils/jwt.operation";
 import { JwtPayload } from "jsonwebtoken";
+import { SendEmail } from "../../utils/nodeMailer";
 
 
 
@@ -27,8 +28,8 @@ const Auth_Login_Service = async (gettedData: Create_Token_Data_Type) => {
         role: isUserExist.role,
         email: isUserExist.email
     }, '10d')
-
-    return { AccessToken, RefreshToken };
+    const user = isUserExist
+    return { AccessToken, RefreshToken,user };
 }
 
 const Refresh_Token_Service = async (token: string) => {
@@ -65,6 +66,10 @@ const Change_Password_Service =async (gettedData:Change_Password_Data_Type,token
         password:encryptNewPassword,
         passwordChangeAt: new Date
     },{new:true}) 
+
+    const html = `<h1>Your Password Is Changed !</h1><br><p>If its not you then come to CODE_NOTE and change your password *</p>`
+    const subject = "Your CODE_NOTE account password is changed !"
+    SendEmail(user.email,html,subject);
 
     return result;
 }
