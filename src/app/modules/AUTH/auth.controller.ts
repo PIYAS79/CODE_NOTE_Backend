@@ -28,7 +28,22 @@ const Refresh_Token_Controller = Async_Catch(async(req:Request,res:Response,next
     })
 })
 
+const Change_Password_Controller = Async_Catch(async(req:Request,res:Response,next:NextFunction)=>{
+    
+    const token = req.headers.authorization as string;
+    const data = req.body;
+    const result = await Auth_Services.Change_Password_Service(data,token);
+
+    res.status(httpStatus.OK).json({
+        success: true,
+        message: "Successfully change password !",
+        data: result
+    })
+
+})
+
 export const Auth_Contollers = {
     Auth_Login_Controller,
-    Refresh_Token_Controller
+    Refresh_Token_Controller,
+    Change_Password_Controller
 }

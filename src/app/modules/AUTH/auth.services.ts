@@ -1,8 +1,8 @@
 import httpStatus from "http-status";
 import Final_App_Error from "../../errors/Final_App_Error";
 import { User_Model } from "../USER/user.model";
-import { Create_Token_Data_Type } from "./auth.interface";
-import { Decrypt_Password } from "../../utils/bcrypt.operation";
+import { Change_Password_Data_Type, Create_Token_Data_Type } from "./auth.interface";
+import { Decrypt_Password, Encrypt_Password } from "../../utils/bcrypt.operation";
 import { Create_JWT_Token, Decode_Token } from "../../utils/jwt.operation";
 import { JwtPayload } from "jsonwebtoken";
 
@@ -45,7 +45,32 @@ const Refresh_Token_Service = async (token: string) => {
     return { AccessToken }
 }
 
+const Change_Password_Service =async (gettedData:Change_Password_Data_Type,token:string) => {
+
+    // decode token data
+    const decodedTokenData = Decode_Token(token) as JwtPayload;
+    // get user from the token data (email)
+    const user = await User_Model.findOne({email:decodedTokenData.email});
+    if(!user){
+        throw new Final_App_Error(httpStatus.NOT_FOUND,"User not found *");
+    }
+    // compair getted old password with the user password  
+    const isPasswordMatch = await Decrypt_Password(gettedData.oldPassword,user.password);
+    if(!isPasswordMatch){
+        throw new Final_App_Error(httpStatus.UNAUTHORIZED,"Unauthorized Access *");
+    }
+
+    const encryptNewPassword = await Encrypt_Password(gettedData.newPassword);
+    const result = await User_Model.findByIdAndUpdate({_id:user._id},{
+        password:encryptNewPassword,
+        passwordChangeAt: new Date
+    },{new:true}) 
+
+    return result;
+}
+
 export const Auth_Services = {
     Auth_Login_Service,
-    Refresh_Token_Service
+    Refresh_Token_Service,
+    Change_Password_Service
 }
