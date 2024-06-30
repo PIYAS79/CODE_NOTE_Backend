@@ -31,8 +31,6 @@ const Auth_Login_Service = async (gettedData: Create_Token_Data_Type) => {
     return { AccessToken, RefreshToken };
 }
 
-
-
 const Refresh_Token_Service = async (token: string) => {
     const decodedData = Decode_Token(token) as JwtPayload;
     const isUserExist = await User_Model.findOne({ email: decodedData.email });
