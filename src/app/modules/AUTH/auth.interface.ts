@@ -11,3 +11,8 @@ export type Change_Password_Data_Type={
     oldPassword:string,
     newPassword:string
 }
+
+export type Reset_Password_Type = {
+    email:string,
+    newPassword:string
+}

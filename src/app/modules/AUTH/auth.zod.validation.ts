@@ -21,3 +21,18 @@ export const Zod_Password_Change_Data_Type = z.object({
         newPassword: z.string()
     })
 })
+
+
+export const Zod_Forget_Password_Type = z.object({
+    body:z.object({
+        email:z.string()
+    })
+})
+
+
+export const Zod_Reset_Password_Type = z.object({
+    body:z.object({
+        email:z.string(),
+        newPassword:z.string(),
+    })
+})
