@@ -1,3 +1,5 @@
+import { Model } from "mongoose"
+
 // user type 
 export type User_Name_Type = {
     f_name: string,
@@ -17,7 +19,6 @@ export type User_Type = {
 
 
 
-
-
-
-
+export interface User_Custom_Static_Method extends Model<User_Type>{
+    isTokenValid(tokenIAt:number,PassUpAt:Date):boolean
+}

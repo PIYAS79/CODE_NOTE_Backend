@@ -35,9 +35,10 @@ const Token_Verify = (...roles: User_Role_Types[]) => {
             throw new Final_App_Error(httpStatus.UNAUTHORIZED, "You are not authorized *")
         }
 
-        // updated related issue 
-
-
+        // check first, is password updated or not, if updated then check the time 
+        if(user?.passwordChangeAt && User_Model.isTokenValid(Number(iat),user?.passwordChangeAt)){
+            throw new Final_App_Error(httpStatus.UNAUTHORIZED,"Unauthorized Access *");
+        }
 
 
         req.user = decodedData;

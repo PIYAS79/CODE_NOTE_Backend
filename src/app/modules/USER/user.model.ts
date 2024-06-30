@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { User_Type } from "./user.interface";
+import { User_Custom_Static_Method, User_Type } from "./user.interface";
 
 
 export const User_Schema = new Schema<User_Type>({
@@ -45,4 +45,11 @@ export const User_Schema = new Schema<User_Type>({
 })
 
 
-export const User_Model = model<User_Type>('User',User_Schema);
+
+User_Schema.statics.isTokenValid = function(tokenIAt:number,PassUpAt:Date){
+    const PassUpdatedAt = new Date(PassUpAt).getTime()/1000;
+    return PassUpdatedAt>tokenIAt;
+}
+
+
+export const User_Model = model<User_Type,User_Custom_Static_Method>('User',User_Schema);
