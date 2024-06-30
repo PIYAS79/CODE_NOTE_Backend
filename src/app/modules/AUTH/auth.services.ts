@@ -8,43 +8,43 @@ import { JwtPayload } from "jsonwebtoken";
 
 
 
-const Auth_Login_Service = async(gettedData:Create_Token_Data_Type)=>{
+const Auth_Login_Service = async (gettedData: Create_Token_Data_Type) => {
 
-    const isUserExist = await User_Model.findOne({userId:gettedData.userId});
-    if(!isUserExist){
-        throw new Final_App_Error(httpStatus.NOT_FOUND,"User Not Found !");
+    const isUserExist = await User_Model.findOne({ email: gettedData.email });
+    if (!isUserExist) {
+        throw new Final_App_Error(httpStatus.NOT_FOUND, "Email or Password is incorrect !");
     }
-    const isPasswordMatch = await Decrypt_Password(gettedData.password,isUserExist.password);
-    if(!isPasswordMatch){
-        throw new Final_App_Error(httpStatus.FORBIDDEN,"Forbidded User")
+    const isPasswordMatch = await Decrypt_Password(gettedData.password, isUserExist.password);
+    if (!isPasswordMatch) {
+        throw new Final_App_Error(httpStatus.NOT_FOUND, "Email or Password is incorrect !");
     }
 
     const AccessToken = Create_JWT_Token({
-        role:isUserExist.role,
-        userId:isUserExist.userId
-    },'1hr')
+        role: isUserExist.role,
+        email: isUserExist.email
+    }, '1hr')
     const RefreshToken = Create_JWT_Token({
-        role:isUserExist.role,
-        userId:isUserExist.userId
-    },'10d')
+        role: isUserExist.role,
+        email: isUserExist.email
+    }, '10d')
 
-    return {AccessToken,RefreshToken};
+    return { AccessToken, RefreshToken };
 }
 
 
 
-const Refresh_Token_Service = async(token:string)=>{
+const Refresh_Token_Service = async (token: string) => {
     const decodedData = Decode_Token(token) as JwtPayload;
-    const isUserExist = await User_Model.findOne({userId:decodedData.userId});
-    if(!isUserExist){
-        throw new Final_App_Error(httpStatus.NOT_FOUND,"User Not Found !");
+    const isUserExist = await User_Model.findOne({ email: decodedData.email });
+    if (!isUserExist) {
+        throw new Final_App_Error(httpStatus.NOT_FOUND, "User Not Found !");
     }
     const AccessToken = Create_JWT_Token({
-        role:isUserExist.role,
-        userId:isUserExist.userId
-    },'1hr')
+        role: isUserExist.role,
+        email: isUserExist.email
+    }, '1hr')
 
-    return {AccessToken}
+    return { AccessToken }
 }
 
 export const Auth_Services = {
