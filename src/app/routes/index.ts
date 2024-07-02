@@ -4,6 +4,7 @@ import { Teacher_Router } from '../modules/TEACHER/teacher.router';
 import { Student_Router } from '../modules/STUDENT/student.route';
 import { Code_Router } from '../modules/CODE/code.route';
 import { Auth_Router } from '../modules/AUTH/auth.router';
+import { Stack_Router } from '../modules/STACK/stack.router';
 
 const router = express.Router();
 
@@ -27,6 +28,10 @@ const projectRoutes = [
     {
         path:'/auth',
         route : Auth_Router
+    },
+    {
+        path:'/stack',
+        route : Stack_Router
     }
 ]
 

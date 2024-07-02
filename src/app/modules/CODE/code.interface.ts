@@ -8,5 +8,5 @@ export type Code_Type = {
     language?: string,
     code: string,
     isStar?: boolean,
-    author: Types.ObjectId
+    author: Types.ObjectId  //user model _id
 }
