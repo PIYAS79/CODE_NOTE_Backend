@@ -12,9 +12,10 @@ const router = express.Router();
 
 // create a req on stack 
 router.post('/',Zod_Validation_Request(Zod_Code_Stack_Type),Stack_Controller.Create_Code_Req_Controller);
-// cancel request 
+// cancel a request 
 router.delete('/:sid',Token_Verify(Role_Types.Admin,Role_Types.Student,Role_Types.Super,Role_Types.Teacher),Stack_Controller.Cancel_Code_Req_Controller);
-// get own reqest (my requst)
+// get own reqest (my requst ; rid=who create request,his/her user _id)
+router.get('/req/:ruid',Token_Verify(Role_Types.Admin,Role_Types.Student,Role_Types.Super,Role_Types.Teacher),Stack_Controller.Get_My_All_Requests_Controller);
 
 // get own ask 
 

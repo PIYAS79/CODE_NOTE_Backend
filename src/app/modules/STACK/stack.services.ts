@@ -35,7 +35,6 @@ const Create_Code_Req_Service = async (gettedData: Code_Stack_Type) => {
         author: gettedData.author,
         code_id: gettedData.code_id,
         from: gettedData.from,
-        isAccept: 'N',
         reqAt: new Date
     }
 
@@ -60,9 +59,27 @@ const Cancel_Code_Req_Service = async (sid: string, token: string) => {
     return result;
 }
 
+const Get_My_All_Requests_Service=async(ruid:string,token:string)=>{
+    // check if the user is exist or not 
+    const user = await User_Model.findById({_id:ruid});
+    if(!user){
+        throw new Final_App_Error(httpStatus.NOT_FOUND, "User not found *");
+    }
+    // decode token 
+    const { email, role } = Decode_Token(token) as JwtPayload;
+    // check the user.email and token user.email
+    if(user.email !== email){
+        throw new Final_App_Error(httpStatus.UNAUTHORIZED, "Unauthorized Access *");
+    }
+    //send data
+    const data = await Stack_Model.find({from:ruid});
+    return data;
+}
+
 
 
 export const Stack_Services = {
     Create_Code_Req_Service,
-    Cancel_Code_Req_Service
+    Cancel_Code_Req_Service,
+    Get_My_All_Requests_Service
 }

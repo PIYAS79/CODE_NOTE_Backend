@@ -25,9 +25,20 @@ const Cancel_Code_Req_Controller = Async_Catch(async(req:Request,res:Response,ne
         data : result
     })
 })
+const Get_My_All_Requests_Controller=Async_Catch(async(req:Request,res:Response,next:NextFunction)=>{
+    const token = req.headers.authorization as string;
+    const result = await Stack_Services.Get_My_All_Requests_Service(req.params.ruid,token);
+
+    res.status(httpStatus.OK).json({
+        success:true,
+        message : "Successfully retrieve all requests !",
+        data : result
+    })
+})
 
 
 export const Stack_Controller = {
     Create_Code_Req_Controller,
-    Cancel_Code_Req_Controller
+    Cancel_Code_Req_Controller,
+    Get_My_All_Requests_Controller
 }
