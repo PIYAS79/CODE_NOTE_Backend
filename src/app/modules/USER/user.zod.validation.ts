@@ -24,7 +24,7 @@ const Zod_User_Contact_Schema = z.object({
     stackOverflow: z.string().optional(),
     codeForces: z.string().optional(),
     phone: z.string().optional(),
-    address: z.string().optional()
+    address: z.string().optional(),
 });
 
 

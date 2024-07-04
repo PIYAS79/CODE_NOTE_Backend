@@ -10,4 +10,11 @@ const Zod_Code_Stack_Type = z.object({
     })
 })
 
-export {Zod_Code_Stack_Type};
+
+const Zod_Ask_Status_Type = z.object({
+    body:z.object({
+        status:z.boolean()
+    })
+})
+
+export {Zod_Code_Stack_Type,Zod_Ask_Status_Type};

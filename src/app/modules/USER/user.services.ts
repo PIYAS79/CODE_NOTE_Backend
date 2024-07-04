@@ -11,7 +11,7 @@ import { Encrypt_Password } from "../../utils/bcrypt.operation"
 
 
 
-const Create_Teacher_Service = async(userData: Get_Teacher_Type) => {
+const Create_Teacher_Service = async (userData: Get_Teacher_Type) => {
 
     const encryptedPass = await Encrypt_Password(userData.user.password);
 
@@ -21,17 +21,17 @@ const Create_Teacher_Service = async(userData: Get_Teacher_Type) => {
         role: userData.user.role,
         userId: userData.user.userId,
         password: encryptedPass,
-        profileImage:'',
+        profileImage: ''
     }
 
     const session = await mongoose.startSession();
-    try{
+    try {
         // transaction start from here
         session.startTransaction();
         // at first create a user 
-        const user = await User_Model.create([newUser],{session});
-        if(!user){
-            throw new Final_App_Error(httpStatus.INTERNAL_SERVER_ERROR,"User creation process is failed for internal server error *");
+        const user = await User_Model.create([newUser], { session });
+        if (!user) {
+            throw new Final_App_Error(httpStatus.INTERNAL_SERVER_ERROR, "User creation process is failed for internal server error *");
         }
         const newTeacher: Teacher_Type = {
             user: user[0]._id,
@@ -40,23 +40,23 @@ const Create_Teacher_Service = async(userData: Get_Teacher_Type) => {
             teacherId: userData.teacherId,
             department: userData.department,
             skills: [],
-            contact:{},
+            contact: {},
         }
         // after ceating the user now create the teacher
-        const teacher = await Teacher_Model.create([newTeacher],{session});
-        if(!teacher){
-            throw new Final_App_Error(httpStatus.INTERNAL_SERVER_ERROR,"User creation process is failed for internal server error *");
+        const teacher = await Teacher_Model.create([newTeacher], { session });
+        if (!teacher) {
+            throw new Final_App_Error(httpStatus.INTERNAL_SERVER_ERROR, "User creation process is failed for internal server error *");
         }
         await session.commitTransaction();
         await session.endSession()
         return teacher;
-    }catch(err){
+    } catch (err) {
         await session.abortTransaction();
         await session.endSession()
         throw err;
     }
 }
-const Create_Student_Service = async(userData: Get_Student_Type) => {
+const Create_Student_Service = async (userData: Get_Student_Type) => {
 
     const encryptedPass = await Encrypt_Password(userData.user.password);
 
@@ -66,17 +66,17 @@ const Create_Student_Service = async(userData: Get_Student_Type) => {
         role: userData.user.role,
         userId: userData.user.userId,
         password: encryptedPass,
-        profileImage:'',
+        profileImage: ''
     }
 
     const session = await mongoose.startSession();
-    try{
+    try {
         // transaction start from here
         session.startTransaction();
         // at first create a user 
-        const user = await User_Model.create([newUser],{session});
-        if(!user){
-            throw new Final_App_Error(httpStatus.INTERNAL_SERVER_ERROR,"User creation process is failed for internal server error *");
+        const user = await User_Model.create([newUser], { session });
+        if (!user) {
+            throw new Final_App_Error(httpStatus.INTERNAL_SERVER_ERROR, "User creation process is failed for internal server error *");
         }
         const newStudent: Student_Type = {
             user: user[0]._id,
@@ -85,17 +85,17 @@ const Create_Student_Service = async(userData: Get_Student_Type) => {
             studentId: userData.studentId,
             department: userData.department,
             skills: [],
-            contact:{},
+            contact: {},
         }
         // after ceating the user now create the teacher
-        const teacher = await Student_Model.create([newStudent],{session});
-        if(!teacher){
-            throw new Final_App_Error(httpStatus.INTERNAL_SERVER_ERROR,"User creation process is failed for internal server error *");
+        const teacher = await Student_Model.create([newStudent], { session });
+        if (!teacher) {
+            throw new Final_App_Error(httpStatus.INTERNAL_SERVER_ERROR, "User creation process is failed for internal server error *");
         }
         await session.commitTransaction();
         await session.endSession()
         return teacher;
-    }catch(err){
+    } catch (err) {
         await session.abortTransaction();
         await session.endSession()
         throw err;
