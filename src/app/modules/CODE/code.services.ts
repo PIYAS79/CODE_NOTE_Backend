@@ -4,15 +4,20 @@ import { User_Model } from "../USER/user.model";
 import { Code_Type } from "./code.interface";
 import { Code_Model } from "./code.model";
 import { JwtPayload } from "jsonwebtoken";
+import { SendEmail } from "../../utils/nodeMailer";
+import { User_Type } from "../USER/user.interface";
 
 
 const Create_Code_Service = async (gettedData: Code_Type) => {
     const uid = gettedData.author;
-    const isUserExist = await User_Model.findById({ _id: uid });
+    const isUserExist = await User_Model.findById({ _id: uid }) as User_Type;
     if (!isUserExist) {
         throw new Final_App_Error(httpStatus.NOT_FOUND, "User not found !");
     }
     const result = await Code_Model.create(gettedData);
+    const html = `<h1>You Create a new code !</h1><br><p>Happy coding from CODE_NOTE</p>`;
+    const subject = "CODE_NOTE : You create a code !"
+    SendEmail(isUserExist.email,html,subject);
     return result;
 }
 const Get_All_Code_Service = async () => {

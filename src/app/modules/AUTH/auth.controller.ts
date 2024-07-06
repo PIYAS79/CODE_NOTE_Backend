@@ -12,7 +12,7 @@ const Auth_Login_Controller = Async_Catch(async(req:Request,res:Response,next:Ne
 
     res.cookie('refreshToken',RefreshToken,{
         httpOnly:true,
-        secure: config.developement_status==='DEVELOPMENT'
+        secure: true
     }).status(httpStatus.OK).json({
         success: true,
         message: "Successfully login user !",

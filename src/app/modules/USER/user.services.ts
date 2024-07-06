@@ -8,6 +8,7 @@ import { Teacher_Model } from "../TEACHER/teacher.model"
 import { Get_Student_Type, Student_Type } from "../STUDENT/student.interface"
 import { Student_Model } from "../STUDENT/student.model"
 import { Encrypt_Password } from "../../utils/bcrypt.operation"
+import { Create_JWT_Token } from "../../utils/jwt.operation"
 
 
 
@@ -47,9 +48,17 @@ const Create_Teacher_Service = async (userData: Get_Teacher_Type) => {
         if (!teacher) {
             throw new Final_App_Error(httpStatus.INTERNAL_SERVER_ERROR, "User creation process is failed for internal server error *");
         }
+        const AccessToken = Create_JWT_Token({
+            role: user[0].role,
+            email: user[0].email
+        }, '1hr')
+        const RefreshToken = Create_JWT_Token({
+            role: user[0].role,
+            email: user[0].email
+        }, '10d')
         await session.commitTransaction();
         await session.endSession()
-        return teacher;
+        return {teacher,AccessToken,RefreshToken};
     } catch (err) {
         await session.abortTransaction();
         await session.endSession()
@@ -92,9 +101,18 @@ const Create_Student_Service = async (userData: Get_Student_Type) => {
         if (!teacher) {
             throw new Final_App_Error(httpStatus.INTERNAL_SERVER_ERROR, "User creation process is failed for internal server error *");
         }
+        const AccessToken = Create_JWT_Token({
+            role: user[0].role,
+            email: user[0].email
+        }, '1hr')
+        const RefreshToken = Create_JWT_Token({
+            role: user[0].role,
+            email: user[0].email
+        }, '10d')
+
         await session.commitTransaction();
         await session.endSession()
-        return teacher;
+        return {teacher,AccessToken,RefreshToken};
     } catch (err) {
         await session.abortTransaction();
         await session.endSession()

@@ -44,6 +44,18 @@ const Create_Code_Req_Service = async (gettedData: Code_Stack_Type) => {
     }
 
     const data = await Stack_Model.create(newCode);
+
+
+
+    let authorName = find_Code_Author_Name(isUserExist.role, isUserExist.email) || 'Default';
+    const html = `<h1>Recently you have code request ! </h1><br><p>someone request for your code ! <a href="www.google.com">go to check profile</a></p>`
+    const subject = "CODE_NOTE : Code Request"
+    SendEmail((isUserExist.email).toString(),html,subject);
+
+
+
+
+
     return data;
 }
 const Cancel_Code_Req_Service = async (sid: string, token: string) => {
@@ -63,7 +75,6 @@ const Cancel_Code_Req_Service = async (sid: string, token: string) => {
     const result = await Stack_Model.findByIdAndDelete({ _id: sid });
     return result;
 }
-
 const Get_My_All_Requests_Service = async (ruid: string, token: string) => {
     // check if the user is exist or not 
     const user = await User_Model.findById({ _id: ruid });
@@ -80,7 +91,6 @@ const Get_My_All_Requests_Service = async (ruid: string, token: string) => {
     const data = await Stack_Model.find({ from: ruid });
     return data;
 }
-
 const Get_My_All_Ask_Service = async (id: string, token: string) => {
     console.log({ id, token });
     // check if the user is exist or not 
@@ -98,16 +108,21 @@ const Get_My_All_Ask_Service = async (id: string, token: string) => {
     const data = await Stack_Model.find({ author: id });
     return data;
 }
-
 const Ask_Decision_Req_Service = async (sid: string, token: string, gettedData: { status: boolean }) => {
     const session = await mongoose.startSession()
     try {
         session.startTransaction();
 
         const isStackExist = await Stack_Model.findById({ _id: sid });
+        console.log("CODE KI ASE ? ==============>",isStackExist);
         // check if the code is exist or not by stack _id
         if (!isStackExist) {
             throw new Final_App_Error(httpStatus.NOT_FOUND, "Stack code not found *")
+        }
+        // check if who req for the code is he exist or not ?
+        const requester = await User_Model.findById({_id:isStackExist.from});
+        if(!requester){
+            throw new Final_App_Error(httpStatus.NOT_FOUND,"Requester not found *");
         }
         // decode token 
         const { email, role } = Decode_Token(token) as JwtPayload;
@@ -126,10 +141,10 @@ const Ask_Decision_Req_Service = async (sid: string, token: string, gettedData: 
             // update isAccept:'N' to stack
             await Stack_Model.findByIdAndUpdate({ _id: isStackExist._id }, { $set: { isAccept: "N" } })
             // send email to reqester
-            let authorName = find_Code_Author_Name(user.role, user.email);
+            let authorName = await find_Code_Author_Name(user.role, user.email);
             const html = `<h1>Your Code Request : Rejected by ${authorName}</h1><br><p>Code Author: ${authorName}</p><br><p>You create this request at : ${isStackExist.reqAt}</p>`
             const subject = "Your code request is rejected by code author 😥"
-            SendEmail((isStackExist.from).toString(), html, subject);
+            SendEmail((requester.email).toString(), html, subject);
             return {
                 message: "Request Rejected Successfull"
             }
@@ -155,10 +170,10 @@ const Ask_Decision_Req_Service = async (sid: string, token: string, gettedData: 
         }
         Code_Model.create(newCode);
         // send email to reqester
-        let authorName = find_Code_Author_Name(user.role, user.email);
+        let authorName = await find_Code_Author_Name(user.role, user.email);
         const html = `<h1>Your Code Request : Accepted by ${authorName}</h1><br><p>Code Author : ${authorName}</p><br><p>You create this request at : ${isStackExist.reqAt}</p>`
         const subject = "Your code request is accept by code author 🔥"
-        await SendEmail((isStackExist.from).toString(), html, subject);
+        await SendEmail((requester.email).toString(), html, subject);
 
         await session.commitTransaction();
         await session.endSession();
