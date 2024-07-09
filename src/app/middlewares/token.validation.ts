@@ -18,10 +18,17 @@ const Token_Verify = (...roles: User_Role_Types[]) => {
             throw new Final_App_Error(httpStatus.FORBIDDEN, "Forbidden User");
         }
         // set token data to req.user
-        const decodedData = jwt.verify(token, (config.jwt_secret as string)) as JwtPayload;
-        const { role, email, iat, exp } = decodedData;
+        let decodedData : JwtPayload;
+        try{
+             decodedData = jwt.verify(token, (config.jwt_secret as string)) as JwtPayload;
+            if(!decodedData){
+                throw new Final_App_Error(httpStatus.FORBIDDEN,"Token not ok *");
+            }
+        }catch(err){
+            next(err);
+        }
         // is user is exist or not 
-        const user = await User_Model.findOne({ email: email });
+        const user = await User_Model.findOne({ email: decodedData!.email });
         // if user not found by token email
         if (!user) {
             throw new Final_App_Error(httpStatus.NOT_FOUND, "User not found *");
@@ -36,12 +43,12 @@ const Token_Verify = (...roles: User_Role_Types[]) => {
         }
 
         // check first, is password updated or not, if updated then check the time 
-        if(user?.passwordChangeAt && User_Model.isTokenValid(Number(iat),user?.passwordChangeAt)){
+        if(user?.passwordChangeAt && User_Model.isTokenValid(Number(decodedData!.iat),user?.passwordChangeAt)){
             throw new Final_App_Error(httpStatus.UNAUTHORIZED,"Unauthorized Access *");
         }
 
 
-        req.user = decodedData;
+        req.user = decodedData!;
         next();
     })
 }
