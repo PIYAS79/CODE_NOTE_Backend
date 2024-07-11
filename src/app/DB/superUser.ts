@@ -7,7 +7,6 @@ let superUser = {
     email: "admin@gmail.com",
     status: "ACTIVE",
     role: Role_Types.Super,
-    userId: 'admin01',
     password: 'admin01',
 }
 

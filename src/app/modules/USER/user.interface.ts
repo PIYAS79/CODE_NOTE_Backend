@@ -11,7 +11,6 @@ export type User_Type = {
     email: string,
     status: "ACTIVE" | "BLOCK",
     role: "STUDENT" | "TEACHER" | "ADMIN" | "SUPER",
-    userId: string,
     password: string,
     passwordChangeAt?: Date,
     profileImage?: string,

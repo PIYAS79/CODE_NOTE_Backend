@@ -56,6 +56,7 @@ const Forget_Password_Controller = Async_Catch(async(req:Request,res:Response,ne
 const Reset_Password_Controller = Async_Catch(async(req:Request,res:Response,next:NextFunction)=>{
 
     const gettedData = req.body;
+    // add token verification
     const token = req.headers.authorization as string;
     const result = await Auth_Services.Reset_Password_Service(gettedData,token);
     

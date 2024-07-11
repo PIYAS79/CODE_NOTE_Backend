@@ -11,7 +11,6 @@ const Zod_User_Name_Schema = z.object({
 const Zod_User_Schema = z.object({
     email: z.string().email(),
     role: z.enum(["STUDENT", "TEACHER", "ADMIN", "SUPER"]),
-    userId: z.string(),
     password: z.string(),
     profileImage: z.string().optional(),
 });

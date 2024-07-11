@@ -20,7 +20,6 @@ const Create_Teacher_Service = async (userData: Get_Teacher_Type) => {
         email: userData.user.email,
         status: "ACTIVE",
         role: userData.user.role,
-        userId: userData.user.userId,
         password: encryptedPass,
         profileImage: ''
     }
@@ -73,7 +72,6 @@ const Create_Student_Service = async (userData: Get_Student_Type) => {
         email: userData.user.email,
         status: "ACTIVE",
         role: userData.user.role,
-        userId: userData.user.userId,
         password: encryptedPass,
         profileImage: ''
     }

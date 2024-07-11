@@ -25,10 +25,6 @@ export const User_Schema = new Schema<User_Type>({
             message :'{VALUE} is not assignable to types "STUDENT", "TEACHER", "ADMIN", "SUPER"'
         },
         required:[true,"You should select the role *"]
-    },
-    userId : {
-        type : String,
-        required : [true, "Provide your user id *"]
     }, 
     password : {
         type : String,
