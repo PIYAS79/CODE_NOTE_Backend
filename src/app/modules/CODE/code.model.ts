@@ -10,9 +10,6 @@ export const Code_Schema = new Schema<Code_Type>({
     courseCode: {
         type: String,
     },
-    language: {
-        type: String,
-    },
     code: {
         type: String,
         required: [true, "give some codes *"]
@@ -21,7 +18,8 @@ export const Code_Schema = new Schema<Code_Type>({
         type: Boolean,
     },
     author: {
-        type:Schema.Types.ObjectId
+        type:Schema.Types.ObjectId,
+        ref:'User'
     }
 },{
     timestamps:true,

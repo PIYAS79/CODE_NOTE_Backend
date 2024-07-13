@@ -25,7 +25,7 @@ const Get_All_Code_Service = async () => {
     return result;
 }
 const Get_Single_Code_Service = async (cid: string) => {
-    const result = await Code_Model.find({ _id: cid });
+    const result = await Code_Model.find({ _id: cid }).populate('author');
     return result;
 }
 const Get_User_Codes_Service = async (uid: string) => {
