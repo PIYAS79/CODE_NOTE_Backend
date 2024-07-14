@@ -12,7 +12,10 @@ const app = express();
 
 // ------------------- parsing middleware call --------------------
 app.use(express.json());
-app.use(cors({origin : [(config.client_url as string),]}));
+app.use(cors({
+    origin : [(config.client_url as string),],
+    credentials:true,
+}));
 app.use(cookieParser())
 
 // initial route -------------------------------------------------

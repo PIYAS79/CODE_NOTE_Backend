@@ -10,6 +10,10 @@ export const Code_Schema = new Schema<Code_Type>({
     courseCode: {
         type: String,
     },
+    language:{
+        type:String,
+        required:[true,"Language is required *"]
+    },
     code: {
         type: String,
         required: [true, "give some codes *"]

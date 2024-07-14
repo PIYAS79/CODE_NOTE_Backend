@@ -13,9 +13,8 @@ import { Create_JWT_Token } from "../../utils/jwt.operation"
 
 
 const Create_Teacher_Service = async (userData: Get_Teacher_Type) => {
-
     const encryptedPass = await Encrypt_Password(userData.user.password);
-
+    // at first create user
     const newUser: User_Type = {
         email: userData.user.email,
         status: "ACTIVE",
@@ -33,6 +32,7 @@ const Create_Teacher_Service = async (userData: Get_Teacher_Type) => {
         if (!user) {
             throw new Final_App_Error(httpStatus.INTERNAL_SERVER_ERROR, "User creation process is failed for internal server error *");
         }
+        // create teacher for separate collection
         const newTeacher: Teacher_Type = {
             user: user[0]._id,
             email: user[0].email,
@@ -47,10 +47,12 @@ const Create_Teacher_Service = async (userData: Get_Teacher_Type) => {
         if (!teacher) {
             throw new Final_App_Error(httpStatus.INTERNAL_SERVER_ERROR, "User creation process is failed for internal server error *");
         }
+        // access token 
         const AccessToken = Create_JWT_Token({
             role: user[0].role,
             email: user[0].email
         }, '1hr')
+        // refresh token 
         const RefreshToken = Create_JWT_Token({
             role: user[0].role,
             email: user[0].email
@@ -95,8 +97,8 @@ const Create_Student_Service = async (userData: Get_Student_Type) => {
             contact: {},
         }
         // after ceating the user now create the teacher
-        const teacher = await Student_Model.create([newStudent], { session });
-        if (!teacher) {
+        const student = await Student_Model.create([newStudent], { session });
+        if (!student) {
             throw new Final_App_Error(httpStatus.INTERNAL_SERVER_ERROR, "User creation process is failed for internal server error *");
         }
         const AccessToken = Create_JWT_Token({
@@ -110,7 +112,7 @@ const Create_Student_Service = async (userData: Get_Student_Type) => {
 
         await session.commitTransaction();
         await session.endSession()
-        return {teacher,AccessToken,RefreshToken};
+        return {student,AccessToken,RefreshToken};
     } catch (err) {
         await session.abortTransaction();
         await session.endSession()

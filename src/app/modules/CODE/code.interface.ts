@@ -7,5 +7,6 @@ export type Code_Type = {
     courseCode?: string,
     code: string,
     isStar?: boolean,
+    language:string,
     author: Types.ObjectId  //user model _id
 }
