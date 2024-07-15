@@ -37,7 +37,8 @@ const Get_Single_Code_Controller = Async_Catch(async(req:Request,res:Response,ne
 })
 const Get_User_Codes_Controller = Async_Catch(async(req:Request,res:Response,next:NextFunction)=>{
     const uid = req.params.uid;
-    const result = await Code_Services.Get_User_Codes_Service(uid);
+    const query = req.query;
+    const result = await Code_Services.Get_User_Codes_Service(uid,query);
 
     res.status(httpStatus.OK).json({
         success: true,
