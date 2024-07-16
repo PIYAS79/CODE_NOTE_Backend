@@ -44,7 +44,7 @@ const Refresh_Token_Service = async (token: string) => {
         email: isUserExist.email
     }, '1hr')
 
-    return { AccessToken }
+    return { AccessToken,userId:isUserExist._id }
 }
 
 const Change_Password_Service = async (gettedData: Change_Password_Data_Type, token: string) => {
