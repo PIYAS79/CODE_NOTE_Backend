@@ -10,7 +10,6 @@ let superUser = {
     password: 'admin01',
 }
 
-
 export const seedSuperUser = async () => {
     const isSuperUserExist = await User_Model.findOne({ role: Role_Types.Super });
     if (!isSuperUserExist) {

@@ -96,7 +96,7 @@ const Create_Student_Service = async (userData: Get_Student_Type) => {
             skills: [],
             contact: {},
         }
-        // after ceating the user now create the teacher
+        // after creating the user now create the student
         const student = await Student_Model.create([newStudent], { session });
         if (!student) {
             throw new Final_App_Error(httpStatus.INTERNAL_SERVER_ERROR, "User creation process is failed for internal server error *");
