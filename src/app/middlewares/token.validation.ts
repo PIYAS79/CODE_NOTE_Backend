@@ -46,12 +46,9 @@ const Token_Verify = (...roles: User_Role_Types[]) => {
         if(user?.passwordChangeAt && User_Model.isTokenValid(Number(decodedData!.iat),user?.passwordChangeAt)){
             throw new Final_App_Error(httpStatus.UNAUTHORIZED,"Unauthorized Access *");
         }
-
-
         req.user = decodedData!;
         next();
     })
 }
-
 
 export default Token_Verify;

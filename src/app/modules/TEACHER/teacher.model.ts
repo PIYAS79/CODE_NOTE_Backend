@@ -32,4 +32,12 @@ const TeacherSchema = new Schema<Teacher_Type>({
     }
 })
 
+TeacherSchema.virtual('fullName').get(function(){
+    if(this.name.m_name){
+        return `${this.name.f_name} ${this.name.m_name} ${this.name.l_name}`
+    }else{
+        return `${this.name.f_name} ${this.name.l_name}`
+    }
+})
+
 export const Teacher_Model = model<Teacher_Type>("Teacher",TeacherSchema);

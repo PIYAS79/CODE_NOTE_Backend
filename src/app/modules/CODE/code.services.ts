@@ -7,6 +7,7 @@ import { JwtPayload } from "jsonwebtoken";
 import { SendEmail } from "../../utils/nodeMailer";
 import { User_Type } from "../USER/user.interface";
 import Query_Builder from "../../class/query.builder";
+import { Student_Model } from "../STUDENT/student.model";
 
 
 const Create_Code_Service = async (gettedData: Code_Type) => {
@@ -18,7 +19,7 @@ const Create_Code_Service = async (gettedData: Code_Type) => {
     const result = await Code_Model.create(gettedData);
     const html = `<h1>You Create a new code !</h1><br><p>Happy coding from CODE_NOTE</p>`;
     const subject = "CODE_NOTE : You create a code !"
-    SendEmail(isUserExist.email, html, subject);
+    // SendEmail(isUserExist.email, html, subject);
     return result;
 }
 const Get_All_Code_Service = async () => {
@@ -26,8 +27,23 @@ const Get_All_Code_Service = async () => {
     return result;
 }
 const Get_Single_Code_Service = async (cid: string) => {
-    const result = await Code_Model.find({ _id: cid }).populate('author');
-    return result;
+    const result = await Code_Model.findOne({ _id: cid }) as Code_Type;
+    let code_author;
+    // find the author,     
+    const author = await User_Model.findById(result.author._id) as any;
+    console.log({author});
+    // check role
+    if (author.role === 'STUDENT') {
+        // for student
+        const studentAuthor = await Student_Model.findOne({email:author.email});
+        code_author = studentAuthor;
+    } else if (author.role === 'TEACHER') {
+        // for teacher
+        const teacherAuthor = await Student_Model.findOne({email:author.email});
+        code_author = teacherAuthor;
+    }
+    // send student or teacher data
+    return {code:result,author:code_author};
 }
 const Get_User_Codes_Service = async (uid: string, query: any) => {
     const isUserExist = await User_Model.findById({ _id: uid });
@@ -45,7 +61,7 @@ const Get_User_Codes_Service = async (uid: string, query: any) => {
         .pageQuery()
     const result = await codeInstance.modelQuery;
     const meta = await codeInstance.countTotalMeta();
-    return {result,meta};
+    return { result, meta };
 }
 const Update_Code_Service = async (cid: string, gettedData: Partial<Code_Type>, tokenData: JwtPayload) => {
 

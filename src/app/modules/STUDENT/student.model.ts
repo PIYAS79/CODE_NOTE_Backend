@@ -32,4 +32,19 @@ const Student_Schema = new Schema<Student_Type>({
     }
 })
 
+
+// userSchema.virtual('domain').get(function() {
+//     return this.email.slice(this.email.indexOf('@') + 1);
+//   });
+
+Student_Schema.virtual('fullName').get(function(){
+    if(this.name.m_name){
+        return `${this.name.f_name} ${this.name.m_name} ${this.name.l_name}`
+    }else{
+        return `${this.name.f_name} ${this.name.l_name}`
+    }
+})
+
+
+
 export const Student_Model = model<Student_Type>("Student",Student_Schema);
