@@ -22,28 +22,39 @@ const Create_Code_Service = async (gettedData: Code_Type) => {
     // SendEmail(isUserExist.email, html, subject);
     return result;
 }
-const Get_All_Code_Service = async () => {
-    const result = await Code_Model.find();
-    return result;
+const Get_All_Code_Service = async (query: Record<string, unknown>) => {
+    const partialSearchTags = ['title', 'courseCode', 'language'];
+    const codeQueryInstance = new Query_Builder(Code_Model.find(), query)
+    .searchQuery(partialSearchTags)
+    .sortQuery()
+    .fieldLimit()
+    .pageQuery()
+    .filterQuery();
+    const result= await codeQueryInstance.modelQuery;
+    const meta = await codeQueryInstance.countTotalMeta();
+    return {result,meta};
+
 }
 const Get_Single_Code_Service = async (cid: string) => {
     const result = await Code_Model.findOne({ _id: cid }) as Code_Type;
+    // if(!result){
+    //     throw new Final_App_Error(httpStatus.NOT_FOUND,"Code not found !")
+    // }
     let code_author;
     // find the author,     
     const author = await User_Model.findById(result.author._id) as any;
-    console.log({author});
     // check role
     if (author.role === 'STUDENT') {
         // for student
-        const studentAuthor = await Student_Model.findOne({email:author.email});
+        const studentAuthor = await Student_Model.findOne({ email: author.email });
         code_author = studentAuthor;
     } else if (author.role === 'TEACHER') {
         // for teacher
-        const teacherAuthor = await Student_Model.findOne({email:author.email});
+        const teacherAuthor = await Student_Model.findOne({ email: author.email });
         code_author = teacherAuthor;
     }
     // send student or teacher data
-    return {code:result,author:code_author};
+    return { code: result, author: code_author };
 }
 const Get_User_Codes_Service = async (uid: string, query: any) => {
     const isUserExist = await User_Model.findById({ _id: uid });
@@ -64,7 +75,6 @@ const Get_User_Codes_Service = async (uid: string, query: any) => {
     return { result, meta };
 }
 const Update_Code_Service = async (cid: string, gettedData: Partial<Code_Type>, tokenData: JwtPayload) => {
-
     // find the code through cid
     const code = await Code_Model.findOne({ _id: cid });
     if (!code) {

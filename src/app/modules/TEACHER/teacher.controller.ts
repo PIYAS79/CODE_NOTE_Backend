@@ -5,7 +5,8 @@ import { Teacher_Services } from "./teacher.services";
 
 
 const Get_All_Teacher_Contoller = Async_Catch(async (req: Request, res: Response, next: NextFunction) => {
-    const result = await Teacher_Services.Get_All_Teacher_Service();
+    const query = req.query;
+    const result = await Teacher_Services.Get_All_Teacher_Service(query);
     res.status(httpStatus.OK).json({
         success: true,
         message: "Successfully retrieve all teachers !",

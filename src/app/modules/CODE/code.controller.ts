@@ -17,8 +17,8 @@ const Create_Code_Controller = Async_Catch(async(req:Request,res:Response,next:N
     })
 })
 const Get_All_Code_Controller = Async_Catch(async(req:Request,res:Response,next:NextFunction)=>{
-    const result = await Code_Services.Get_All_Code_Service();
-
+    const query = req.query;
+    const result = await Code_Services.Get_All_Code_Service(query);
     res.status(httpStatus.OK).json({
         success: true,
         message: "Successfully retrieve all codes !",

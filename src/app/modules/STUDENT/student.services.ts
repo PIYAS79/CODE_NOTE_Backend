@@ -4,12 +4,22 @@ import { User_Model } from "../USER/user.model";
 import mongoose from "mongoose";
 import { Student_Model } from "./student.model";
 import { Student_Type } from "./student.interface";
+import Query_Builder from "../../class/query.builder";
 
 
 
-const Get_All_Student_Service = async () => {
-    const data = await Student_Model.find().populate('user');
-    return data;
+const Get_All_Student_Service = async (query:Record<string,unknown>) => {
+    const partialSearchTags = ['name.f_name','name.m_name','name.l_name','studentId','department','fullname'];
+    const codeQueryInstance = new Query_Builder(Student_Model.find().populate('user'), query)
+    .searchQuery(partialSearchTags)
+    .sortQuery()
+    .fieldLimit()
+    .pageQuery()
+    .filterQuery();
+    const result= await codeQueryInstance.modelQuery;
+    const meta = await codeQueryInstance.countTotalMeta();
+    return {result,meta};
+
 }
 const Get_Single_Student_Service = async (tid: string) => {
     const data = await Student_Model.findById(tid).populate('user');

@@ -5,7 +5,8 @@ import { Student_Services } from "./student.services";
 
 
 const Get_All_Student_Contoller = Async_Catch(async (req: Request, res: Response, next: NextFunction) => {
-    const result = await Student_Services.Get_All_Student_Service();
+    const query = req.query;
+    const result = await Student_Services.Get_All_Student_Service(query);
     res.status(httpStatus.OK).json({
         success: true,
         message: "Successfully retrieve all students !",

@@ -4,12 +4,23 @@ import { User_Model } from "../USER/user.model";
 import { Teacher_Type } from "./teacher.interface";
 import { Teacher_Model } from "./teacher.model"
 import mongoose from "mongoose";
+import Query_Builder from "../../class/query.builder";
 
 
 
-const Get_All_Teacher_Service = async () => {
-    const data = await Teacher_Model.find().populate('user');
-    return data;
+const Get_All_Teacher_Service = async (query: Record<string, unknown>) => {
+
+    const partialSearchTags = ['name.f_name', 'name.m_name', 'name.l_name', 'teacherId', 'department', 'fullname'];
+    const codeQueryInstance = new Query_Builder(Teacher_Model.find().populate('user'), query)
+        .searchQuery(partialSearchTags)
+        .sortQuery()
+        .fieldLimit()
+        .pageQuery()
+        .filterQuery();
+    const result = await codeQueryInstance.modelQuery;
+    const meta = await codeQueryInstance.countTotalMeta();
+    return { result, meta };
+
 }
 const Get_Single_Teacher_Service = async (tid: string) => {
     const data = await Teacher_Model.findById(tid).populate('user');
@@ -50,13 +61,13 @@ const Delete_Single_Teacher_Service = async (tid: string) => {
     try {
         session.startTransaction()
         const isUserDelete = await User_Model.findByIdAndDelete({ _id: teacher.user });
-        if(!isUserDelete){
-            throw new Final_App_Error(httpStatus.INTERNAL_SERVER_ERROR,"User Ref not found !")
+        if (!isUserDelete) {
+            throw new Final_App_Error(httpStatus.INTERNAL_SERVER_ERROR, "User Ref not found !")
         }
 
         // DELETE CODES {{{{{{{{{{}}}}}}}}}}
-        
-        const data = await Teacher_Model.findByIdAndDelete({_id: teacher._id });
+
+        const data = await Teacher_Model.findByIdAndDelete({ _id: teacher._id });
         await session.commitTransaction();
         await session.endSession();
         return data;
