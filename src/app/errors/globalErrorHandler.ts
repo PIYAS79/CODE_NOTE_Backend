@@ -45,6 +45,7 @@ const global_Error_Handler = (err: any, req: Request, res: Response, next: NextF
             path : '',
             message : err.message
         }]
+        statusCode=err.statusCode
     }
 
     res.status(statusCode).json({

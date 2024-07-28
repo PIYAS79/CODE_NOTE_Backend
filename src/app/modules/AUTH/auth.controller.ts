@@ -23,7 +23,7 @@ const Refresh_Token_Controller = Async_Catch(async(req:Request,res:Response,next
     const {AccessToken,userId} = await Auth_Services.Refresh_Token_Service(req.cookies.refreshToken)
     res.status(httpStatus.OK).json({
         success: true,
-        message: "Successfully login user !",
+        message: "Successfully get refresh token !",
         data: {AccessToken,userId}
     })
 })

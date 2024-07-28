@@ -18,16 +18,16 @@ const Token_Verify = (...roles: User_Role_Types[]) => {
             throw new Final_App_Error(httpStatus.FORBIDDEN, "Forbidden User");
         }
         // set token data to req.user
-        let decodedData : JwtPayload;
+        let decodedData=null;
         try{
              decodedData = jwt.verify(token, (config.jwt_secret as string)) as JwtPayload;
             if(!decodedData){
-                throw new Final_App_Error(httpStatus.FORBIDDEN,"Token not ok *");
+                console.log('Fire decode is null',decodedData);
+                throw new Final_App_Error(httpStatus.UNAUTHORIZED,"Unauthorized Access found*");
             }
         }catch(err){
-            next(err);
+            throw new Final_App_Error(httpStatus.UNAUTHORIZED,"Unauthorized Access found ++*");
         }
-        // is user is exist or not 
         const user = await User_Model.findOne({ email: decodedData!.email });
         // if user not found by token email
         if (!user) {

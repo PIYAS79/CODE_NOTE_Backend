@@ -35,6 +35,7 @@ const Auth_Login_Service = async (gettedData: Create_Token_Data_Type) => {
 
 const Refresh_Token_Service = async (token: string) => {
     const decodedData = Decode_Token(token) as JwtPayload;
+    console.log({token,decodedData});
     const isUserExist = await User_Model.findOne({ email: decodedData.email });
     if (!isUserExist) {
         throw new Final_App_Error(httpStatus.NOT_FOUND, "User Not Found !");
