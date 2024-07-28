@@ -8,8 +8,10 @@ import { SendEmail } from "../../utils/nodeMailer";
 import { User_Type } from "../USER/user.interface";
 import Query_Builder from "../../class/query.builder";
 import { Student_Model } from "../STUDENT/student.model";
+import { Teacher_Model } from "../TEACHER/teacher.model";
 
 
+// create a code
 const Create_Code_Service = async (gettedData: Code_Type) => {
     const uid = gettedData.author;
     const isUserExist = await User_Model.findById({ _id: uid }) as User_Type;
@@ -22,19 +24,21 @@ const Create_Code_Service = async (gettedData: Code_Type) => {
     // SendEmail(isUserExist.email, html, subject);
     return result;
 }
+// get all code of a collection
 const Get_All_Code_Service = async (query: Record<string, unknown>) => {
     const partialSearchTags = ['title', 'courseCode', 'language'];
     const codeQueryInstance = new Query_Builder(Code_Model.find(), query)
-    .searchQuery(partialSearchTags)
-    .sortQuery()
-    .fieldLimit()
-    .pageQuery()
-    .filterQuery();
-    const result= await codeQueryInstance.modelQuery;
+        .searchQuery(partialSearchTags)
+        .sortQuery()
+        .fieldLimit()
+        .pageQuery()
+        .filterQuery();
+    const result = await codeQueryInstance.modelQuery;
     const meta = await codeQueryInstance.countTotalMeta();
-    return {result,meta};
+    return { result, meta };
 
 }
+// get a single code details
 const Get_Single_Code_Service = async (cid: string) => {
     const result = await Code_Model.findOne({ _id: cid }) as Code_Type;
     // if(!result){
@@ -50,12 +54,13 @@ const Get_Single_Code_Service = async (cid: string) => {
         code_author = studentAuthor;
     } else if (author.role === 'TEACHER') {
         // for teacher
-        const teacherAuthor = await Student_Model.findOne({ email: author.email });
+        const teacherAuthor = await Teacher_Model.findOne({ email: author.email });
         code_author = teacherAuthor;
     }
     // send student or teacher data
     return { code: result, author: code_author };
 }
+// get a user all codes
 const Get_User_Codes_Service = async (uid: string, query: any) => {
     const isUserExist = await User_Model.findById({ _id: uid });
     if (!isUserExist) {
@@ -64,7 +69,7 @@ const Get_User_Codes_Service = async (uid: string, query: any) => {
     // const result = await Code_Model.find({ author: uid });
     // return result;
     const partialSearchTags = ['title', 'courseCode', 'language'];
-    const codeInstance = new Query_Builder(Code_Model.find(), query)
+    const codeInstance = new Query_Builder(Code_Model.find({author:uid}), query)
         .searchQuery(partialSearchTags)
         .fieldLimit()
         .filterQuery()
