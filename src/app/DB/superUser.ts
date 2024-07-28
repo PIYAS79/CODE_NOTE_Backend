@@ -18,3 +18,4 @@ export const seedSuperUser = async () => {
         await User_Model.create(superUser);
     }
 }
+
