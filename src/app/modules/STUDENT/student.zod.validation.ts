@@ -14,7 +14,6 @@ const Get_Student_Schema = z.object({
 
 const Zod_UPDATE_Student_Schema = z.object({
     body: z.object({
-        user: Zod_User_Schema.optional(),
         name: Zod_User_Name_Schema.optional(),
         studentId: z.string().optional(),
         department: z.string().optional(),

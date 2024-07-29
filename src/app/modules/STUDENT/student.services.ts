@@ -29,8 +29,8 @@ const Get_Single_Student_Service = async (tid: string) => {
     return data;
 }
 const Update_Single_Student_Service = async (tid: string, sendedData: Partial<Student_Type>) => {
-    const teacher = await Student_Model.findById({ _id: tid });
-    if (!teacher) {
+    const student = await Student_Model.findById({ _id: tid });
+    if (!student) {
         throw new Final_App_Error(httpStatus.NOT_FOUND, "Student not found *");
     }
     const { name, contact, ...remainingPremetiveType } = sendedData;

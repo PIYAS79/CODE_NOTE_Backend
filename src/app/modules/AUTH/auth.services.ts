@@ -49,7 +49,6 @@ const Refresh_Token_Service = async (token: string) => {
 }
 
 const Change_Password_Service = async (gettedData: Change_Password_Data_Type, token: string) => {
-
     // decode token data
     const decodedTokenData = Decode_Token(token) as JwtPayload;
     // get user from the token data (email)
@@ -60,7 +59,7 @@ const Change_Password_Service = async (gettedData: Change_Password_Data_Type, to
     // compair getted old password with the user password  
     const isPasswordMatch = await Decrypt_Password(gettedData.oldPassword, user.password);
     if (!isPasswordMatch) {
-        throw new Final_App_Error(httpStatus.UNAUTHORIZED, "Unauthorized Access *");
+        throw new Final_App_Error(httpStatus.UNAUTHORIZED, "Current Password Not Match !");
     }
 
     const encryptNewPassword = await Encrypt_Password(gettedData.newPassword);
@@ -71,7 +70,7 @@ const Change_Password_Service = async (gettedData: Change_Password_Data_Type, to
 
     const html = `<h1>Your Password Is Changed !</h1><br><p>If its not you then come to CODE_NOTE and change your password *</p>`
     const subject = "Your CODE_NOTE account password is changed !"
-    SendEmail(user.email, html, subject);
+    // SendEmail(user.email, html, subject);
 
     return result;
 }
