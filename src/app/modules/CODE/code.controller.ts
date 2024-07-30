@@ -28,7 +28,6 @@ const Get_All_Code_Controller = Async_Catch(async(req:Request,res:Response,next:
 const Get_Single_Code_Controller = Async_Catch(async(req:Request,res:Response,next:NextFunction)=>{
     const cid = req.params.cid;
     const result = await Code_Services.Get_Single_Code_Service(cid);
-
     res.status(httpStatus.OK).json({
         success: true,
         message: "Successfully retrieve a code !",
@@ -71,6 +70,17 @@ const Delete_Code_Controller = Async_Catch(async(req:Request,res:Response,next:N
         data: result
     })
 })
+const Get_User_Star_Code_Controller = Async_Catch(async(req:Request,res:Response,next:NextFunction)=>{
+
+    const uid = req.params.uid;
+    const result = await Code_Services.Get_User_Star_Code_Service(uid,req.user);
+
+    res.status(httpStatus.OK).json({
+        success: true,
+        message: "Successfully get a user star codes !",
+        data: result
+    })
+})
 
 
 export const Code_Controller = {
@@ -79,5 +89,6 @@ export const Code_Controller = {
     Get_Single_Code_Controller,
     Get_User_Codes_Controller,
     Update_Code_Controller,
-    Delete_Code_Controller
+    Delete_Code_Controller,
+    Get_User_Star_Code_Controller
 }

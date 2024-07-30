@@ -21,5 +21,7 @@ router.get('/user/:uid',Token_Verify(Role_Types.Admin,Role_Types.Student,Role_Ty
 router.patch('/:cid',Token_Verify(Role_Types.Admin,Role_Types.Student,Role_Types.Super,Role_Types.Teacher),Zod_Validation_Request(Zod_Update_Code_Schema),Code_Controller.Update_Code_Controller)
 // delete a code 
 router.delete('/:cid',Token_Verify(Role_Types.Admin,Role_Types.Student,Role_Types.Super,Role_Types.Teacher),Code_Controller.Delete_Code_Controller)
+// get user star codes
+router.get('/star/:uid',Token_Verify(Role_Types.Admin,Role_Types.Student,Role_Types.Super,Role_Types.Teacher),Code_Controller.Get_User_Star_Code_Controller)
 
 export const Code_Router = router;

@@ -40,13 +40,13 @@ const Get_All_Code_Service = async (query: Record<string, unknown>) => {
 }
 // get a single code details
 const Get_Single_Code_Service = async (cid: string) => {
-    const result = await Code_Model.findOne({ _id: cid }) as Code_Type;
+    const code = await Code_Model.findOne({ _id: cid }) as Code_Type;
     // if(!result){
     //     throw new Final_App_Error(httpStatus.NOT_FOUND,"Code not found !")
     // }
-    let code_author;
+    let code_author:any;
     // find the author,     
-    const author = await User_Model.findById(result.author._id) as any;
+    const author = await User_Model.findById(code.author._id) as any;
     // check role
     if (author.role === 'STUDENT') {
         // for student
@@ -58,7 +58,7 @@ const Get_Single_Code_Service = async (cid: string) => {
         code_author = teacherAuthor;
     }
     // send student or teacher data
-    return { code: result, author: code_author };
+    return { code, author: code_author,authorPP:author.profileImage };
 }
 // get a user all codes
 const Get_User_Codes_Service = async (uid: string, query: any) => {
@@ -69,7 +69,7 @@ const Get_User_Codes_Service = async (uid: string, query: any) => {
     // const result = await Code_Model.find({ author: uid });
     // return result;
     const partialSearchTags = ['title', 'courseCode', 'language'];
-    const codeInstance = new Query_Builder(Code_Model.find({author:uid}), query)
+    const codeInstance = new Query_Builder(Code_Model.find({ author: uid }), query)
         .searchQuery(partialSearchTags)
         .fieldLimit()
         .filterQuery()
@@ -115,6 +115,14 @@ const Delete_Code_Service = async (cid: string, tokenData: JwtPayload) => {
     return result;
 }
 
+// get a user star codes service 
+const Get_User_Star_Code_Service = async (uid:string,tokenData:JwtPayload) => {
+    
+    // get star codes by prop "author"
+    const datas = await Code_Model.find({author:uid,isStar:true});
+
+    return datas;
+}
 
 export const Code_Services = {
     Create_Code_Service,
@@ -122,5 +130,6 @@ export const Code_Services = {
     Get_Single_Code_Service,
     Get_User_Codes_Service,
     Update_Code_Service,
-    Delete_Code_Service
+    Delete_Code_Service,
+    Get_User_Star_Code_Service
 }
