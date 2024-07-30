@@ -9,9 +9,11 @@ import { Get_Student_Type, Student_Type } from "../STUDENT/student.interface"
 import { Student_Model } from "../STUDENT/student.model"
 import { Encrypt_Password } from "../../utils/bcrypt.operation"
 import { Create_JWT_Token } from "../../utils/jwt.operation"
+import { sendImageToCloudinary } from "../../utils/Upload_Image"
+import { JwtPayload } from "jsonwebtoken"
 
 
-
+// create teacher service
 const Create_Teacher_Service = async (userData: Get_Teacher_Type) => {
     const encryptedPass = await Encrypt_Password(userData.user.password);
     // at first create user
@@ -59,13 +61,15 @@ const Create_Teacher_Service = async (userData: Get_Teacher_Type) => {
         }, '10d')
         await session.commitTransaction();
         await session.endSession()
-        return {teacher,AccessToken,RefreshToken};
+        return { teacher, AccessToken, RefreshToken };
     } catch (err) {
         await session.abortTransaction();
         await session.endSession()
         throw err;
     }
 }
+
+// create student service
 const Create_Student_Service = async (userData: Get_Student_Type) => {
 
     const encryptedPass = await Encrypt_Password(userData.user.password);
@@ -112,7 +116,7 @@ const Create_Student_Service = async (userData: Get_Student_Type) => {
 
         await session.commitTransaction();
         await session.endSession()
-        return {student,AccessToken,RefreshToken};
+        return { student, AccessToken, RefreshToken };
     } catch (err) {
         await session.abortTransaction();
         await session.endSession()
@@ -120,8 +124,27 @@ const Create_Student_Service = async (userData: Get_Student_Type) => {
     }
 }
 
+// upload profile picture service
+const Upload_Profile_Picture_Service = async (file: any,query:Record<string,unknown>,tokenData:JwtPayload) => {
+    const {email} = query;
+    // at first check if the email is provided or not
+    if(!email){
+        throw new Final_App_Error(httpStatus.NOT_FOUND,"User Data Reference not found !");
+    }
+    // check is token data and query data are equal or not
+    if(tokenData.email !== email){
+        throw new Final_App_Error(httpStatus.UNAUTHORIZED,"Token is not matched with reference !");
+    }
+    const uploadedData:any = await sendImageToCloudinary(file.originalname,file.path);
+    
+    const result = await User_Model.findOneAndUpdate({email},{profileImage:uploadedData.secure_url},{new:true});
+
+    
+    return result;
+}
 
 export const User_Services = {
     Create_Teacher_Service,
-    Create_Student_Service
+    Create_Student_Service,
+    Upload_Profile_Picture_Service
 }
