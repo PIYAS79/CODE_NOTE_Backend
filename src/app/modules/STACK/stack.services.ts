@@ -1,7 +1,6 @@
 import httpStatus from "http-status";
 import Final_App_Error from "../../errors/Final_App_Error";
 import { User_Model } from "../USER/user.model";
-import { Code_Stack_Type } from "./stack.interface";
 import { Code_Model } from "../CODE/code.model";
 import { Stack_Model } from "./stack.model";
 import { Decode_Token } from "../../utils/jwt.operation";
@@ -10,6 +9,8 @@ import { SendEmail } from "../../utils/nodeMailer";
 import { Code_Type } from "../CODE/code.interface";
 import mongoose from "mongoose";
 import { find_Code_Author_Name } from "../../utils/findAuthorName";
+import { User_Type } from "../USER/user.interface";
+import { Code_Stack_Type } from "./stack.interface";
 
 
 
@@ -37,25 +38,21 @@ const Create_Code_Req_Service = async (gettedData: Code_Stack_Type) => {
     }
 
     const newCode: Code_Stack_Type = {
+        sender_name: gettedData.sender_name,
+        sender_pp: gettedData.sender_pp,
+        author_name: gettedData.author_name,
+        author_pp: gettedData.author_pp,
         author: gettedData.author,
         code_id: gettedData.code_id,
         from: gettedData.from,
         reqAt: new Date
     }
-
     const data = await Stack_Model.create(newCode);
-
-
 
     let authorName = find_Code_Author_Name(isUserExist.role, isUserExist.email) || 'Default';
     const html = `<h1>Recently you have code request ! </h1><br><p>someone request for your code ! <a href="www.google.com">go to check profile</a></p>`
     const subject = "CODE_NOTE : Code Request"
-    SendEmail((isUserExist.email).toString(),html,subject);
-
-
-
-
-
+    // SendEmail((isUserExist.email).toString(),html,subject);
     return data;
 }
 const Cancel_Code_Req_Service = async (sid: string, token: string) => {
@@ -77,7 +74,7 @@ const Cancel_Code_Req_Service = async (sid: string, token: string) => {
 }
 const Get_My_All_Requests_Service = async (ruid: string, token: string) => {
     // check if the user is exist or not 
-    const user = await User_Model.findById({ _id: ruid });
+    const user = await User_Model.findById({ _id: ruid }) as User_Type;
     if (!user) {
         throw new Final_App_Error(httpStatus.NOT_FOUND, "User not found *");
     }
@@ -89,7 +86,8 @@ const Get_My_All_Requests_Service = async (ruid: string, token: string) => {
     }
     //send data
     const data = await Stack_Model.find({ from: ruid });
-    return data;
+    console.log({ gettedData: data });
+    return { data };
 }
 const Get_My_All_Ask_Service = async (id: string, token: string) => {
     console.log({ id, token });
@@ -114,15 +112,14 @@ const Ask_Decision_Req_Service = async (sid: string, token: string, gettedData: 
         session.startTransaction();
 
         const isStackExist = await Stack_Model.findById({ _id: sid });
-        console.log("CODE KI ASE ? ==============>",isStackExist);
         // check if the code is exist or not by stack _id
         if (!isStackExist) {
             throw new Final_App_Error(httpStatus.NOT_FOUND, "Stack code not found *")
         }
         // check if who req for the code is he exist or not ?
-        const requester = await User_Model.findById({_id:isStackExist.from});
-        if(!requester){
-            throw new Final_App_Error(httpStatus.NOT_FOUND,"Requester not found *");
+        const requester = await User_Model.findById({ _id: isStackExist.from });
+        if (!requester) {
+            throw new Final_App_Error(httpStatus.NOT_FOUND, "Requester not found *");
         }
         // decode token 
         const { email, role } = Decode_Token(token) as JwtPayload;
@@ -138,22 +135,12 @@ const Ask_Decision_Req_Service = async (sid: string, token: string, gettedData: 
 
         if (!gettedData.status) {
             // req unaccepted 
-            // update isAccept:'N' to stack
-            await Stack_Model.findByIdAndUpdate({ _id: isStackExist._id }, { $set: { isAccept: "N" } })
-            // send email to reqester
-            let authorName = await find_Code_Author_Name(user.role, user.email);
-            const html = `<h1>Your Code Request : Rejected by ${authorName}</h1><br><p>Code Author: ${authorName}</p><br><p>You create this request at : ${isStackExist.reqAt}</p>`
-            const subject = "Your code request is rejected by code author 😥"
-            SendEmail((requester.email).toString(), html, subject);
-            return {
-                message: "Request Rejected Successfull"
-            }
+            // lets delete the req
+            let result = await Stack_Model.findByIdAndDelete({_id:sid});
+            return result;
         }
 
-        // accepted req block
-        // update isAccept:'Y' to stack
-        const result = await Stack_Model.findByIdAndUpdate({ _id: isStackExist._id }, { $set: { isAccept: "Y" } }, { new: true });
-        // get this code
+        // req accepted
         const code = await Code_Model.findById({ _id: isStackExist.code_id });
         if (!code) {
             throw new Final_App_Error(httpStatus.NOT_FOUND, "May be code is deleted by the author")
@@ -168,18 +155,18 @@ const Ask_Decision_Req_Service = async (sid: string, token: string, gettedData: 
             author: isStackExist.from
 
         }
-        Code_Model.create(newCode);
+        await Code_Model.create(newCode);
+        let result = await Stack_Model.findByIdAndDelete({_id:sid});
         // send email to reqester
         let authorName = await find_Code_Author_Name(user.role, user.email);
         const html = `<h1>Your Code Request : Accepted by ${authorName}</h1><br><p>Code Author : ${authorName}</p><br><p>You create this request at : ${isStackExist.reqAt}</p>`
         const subject = "Your code request is accept by code author 🔥"
-        await SendEmail((requester.email).toString(), html, subject);
+        // await SendEmail((requester.email).toString(), html, subject);
 
         await session.commitTransaction();
         await session.endSession();
 
         return result
-
     } catch (err: any) {
         await session.abortTransaction();
         await session.endSession()

@@ -18,16 +18,24 @@ const Stack_Schema = new Schema<Code_Stack_Type>({
         type: Schema.Types.ObjectId,
         require: [true, "From is required *"]
     },
-    isAccept:{
+    author_name: {
         type: String,
-        enum:{
-            values:['Y','P','N'],
-            message:'{VALUE} is not assignable to types "Y", "P", "N"'
-        },
-        default:'P'
+        require: [true, "author name is required *"]
+    },
+    author_pp: {
+        type: String,
+    },
+    sender_name: {
+        type: String,
+        require: [true, "author name is required *"]
+    },
+    sender_pp: {
+        type: String,
     },
     reqAt: Date
+}, {
+    timestamps: true
 })
 
 
-export const Stack_Model = model<Code_Stack_Type>('Stack',Stack_Schema);
+export const Stack_Model = model<Code_Stack_Type>('Stack', Stack_Schema);
