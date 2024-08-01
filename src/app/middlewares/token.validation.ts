@@ -22,7 +22,6 @@ const Token_Verify = (...roles: User_Role_Types[]) => {
         try{
              decodedData = jwt.verify(token, (config.jwt_secret as string)) as JwtPayload;
             if(!decodedData){
-                console.log('Fire decode is null',decodedData);
                 throw new Final_App_Error(httpStatus.UNAUTHORIZED,"Unauthorized Access found*");
             }
         }catch(err){

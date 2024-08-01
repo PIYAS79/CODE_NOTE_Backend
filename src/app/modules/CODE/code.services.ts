@@ -21,7 +21,11 @@ const Create_Code_Service = async (gettedData: Code_Type) => {
     const result = await Code_Model.create(gettedData);
     const html = `<h1>You Create a new code !</h1><br><p>Happy coding from CODE_NOTE</p>`;
     const subject = "CODE_NOTE : You create a code !"
-    // SendEmail(isUserExist.email, html, subject);
+    try {
+        SendEmail(isUserExist.email, html, subject);
+    } catch (err) {
+        console.log(err);
+    }
     return result;
 }
 // get all code of a collection
@@ -44,7 +48,7 @@ const Get_Single_Code_Service = async (cid: string) => {
     // if(!result){
     //     throw new Final_App_Error(httpStatus.NOT_FOUND,"Code not found !")
     // }
-    let code_author:any;
+    let code_author: any;
     // find the author,     
     const author = await User_Model.findById(code.author._id) as any;
     // check role
@@ -58,7 +62,7 @@ const Get_Single_Code_Service = async (cid: string) => {
         code_author = teacherAuthor;
     }
     // send student or teacher data
-    return { code, author: code_author,authorPP:author.profileImage };
+    return { code, author: code_author, authorPP: author.profileImage };
 }
 // get a user all codes
 const Get_User_Codes_Service = async (uid: string, query: any) => {
@@ -116,10 +120,10 @@ const Delete_Code_Service = async (cid: string, tokenData: JwtPayload) => {
 }
 
 // get a user star codes service 
-const Get_User_Star_Code_Service = async (uid:string,tokenData:JwtPayload) => {
-    
+const Get_User_Star_Code_Service = async (uid: string, tokenData: JwtPayload) => {
+
     // get star codes by prop "author"
-    const datas = await Code_Model.find({author:uid,isStar:true});
+    const datas = await Code_Model.find({ author: uid, isStar: true });
 
     return datas;
 }

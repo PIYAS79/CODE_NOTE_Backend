@@ -86,11 +86,9 @@ const Get_My_All_Requests_Service = async (ruid: string, token: string) => {
     }
     //send data
     const data = await Stack_Model.find({ from: ruid });
-    console.log({ gettedData: data });
     return { data };
 }
 const Get_My_All_Ask_Service = async (id: string, token: string) => {
-    console.log({ id, token });
     // check if the user is exist or not 
     const user = await User_Model.findById({ _id: id });
     if (!user) {
@@ -161,7 +159,7 @@ const Ask_Decision_Req_Service = async (sid: string, token: string, gettedData: 
         let authorName = await find_Code_Author_Name(user.role, user.email);
         const html = `<h1>Your Code Request : Accepted by ${authorName}</h1><br><p>Code Author : ${authorName}</p><br><p>You create this request at : ${isStackExist.reqAt}</p>`
         const subject = "Your code request is accept by code author 🔥"
-        // await SendEmail((requester.email).toString(), html, subject);
+        await SendEmail((requester.email).toString(), html, subject);
 
         await session.commitTransaction();
         await session.endSession();

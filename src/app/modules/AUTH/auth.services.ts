@@ -35,7 +35,6 @@ const Auth_Login_Service = async (gettedData: Create_Token_Data_Type) => {
 
 const Refresh_Token_Service = async (token: string) => {
     const decodedData = Decode_Token(token) as JwtPayload;
-    console.log({ token, decodedData });
     const isUserExist = await User_Model.findOne({ email: decodedData.email });
     if (!isUserExist) {
         throw new Final_App_Error(httpStatus.NOT_FOUND, "User Not Found !");
@@ -70,7 +69,11 @@ const Change_Password_Service = async (gettedData: Change_Password_Data_Type, to
 
     const html = `<h1>Your Password Is Changed !</h1><br><p>If its not you then come to CODE_NOTE and change your password *</p>`
     const subject = "Your CODE_NOTE account password is changed !"
-    // SendEmail(user.email, html, subject);
+    try {
+        SendEmail(user.email, html, subject);
+    } catch (err) {
+        console.log(err);
+    }
 
     return result;
 }
