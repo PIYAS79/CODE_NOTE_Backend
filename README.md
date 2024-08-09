@@ -1,9 +1,20 @@
-## Base Api
+## Base API
 https://code-note-backend.vercel.app
-## [Api Live Link](https://code-note-backend.vercel.app)
+## [API Live Link](https://code-note-backend.vercel.app)
+
+## Technologies I Use
+- TypeScript
+- Express.js
+- Mongoose
+- JWT
+- Nodemailer
+- Multer
+- Bcrypt
+- Cloudinary etc.
 
 
-| Title              | TYPE        | Method    |  End Points      |
+
+| API Title              | Type        | Method    |  End Points      |
 | :----------------  | :------:    | :--------:| :-----------:    |
 | Create User        |   Teacher   | POST      | /user/teacher    |
 | Get All Teacher    |   Teacher   | GET       |  /teacher        |
