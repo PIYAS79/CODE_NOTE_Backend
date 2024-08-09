@@ -1,3 +1,8 @@
+## Base Api
+https://code-note-backend.vercel.app
+## [Api Live Link](https://code-note-backend.vercel.app)
+
+
 | Title              | TYPE        | Method    |  End Points      |
 | :----------------  | :------:    | :--------:| :-----------:    |
 | Create User        |   Teacher   | POST      | /user/teacher    |
